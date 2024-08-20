@@ -1,135 +1,68 @@
-# Line
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js dengan Data Labels</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        canvas {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chart.js dengan Data Labels</h1>
+        <canvas id="myChart"></canvas>
+    </div>
 
-```js chart-editor
-// <block:setup:2>
-var DATA_COUNT = 8;
-var labels = [];
+    <script>
+        // Data untuk Chart
+        const data = {
+            labels: ['A', 'B', 'C', 'D', 'E'],
+            datasets: [{
+                label: 'Nilai',
+                data: [10, 20, 30, 40, 50],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
 
-Utils.srand(8);
-
-for (var i = 0; i < DATA_COUNT; ++i) {
-  labels.push('' + i);
-}
-// </block:setup>
-
-var config = /* <block:config:0> */ {
-  type: 'line',
-  data: {
-    labels: labels,
-    datasets: [{
-      backgroundColor: Utils.color(0),
-      borderColor: Utils.color(0),
-      data: Utils.numbers({
-        count: DATA_COUNT,
-        min: 0,
-        max: 100
-      }),
-      datalabels: {
-        align: 'start',
-        anchor: 'start'
-      }
-    }, {
-      backgroundColor: Utils.color(1),
-      borderColor: Utils.color(1),
-      data: Utils.numbers({
-        count: DATA_COUNT,
-        min: 0,
-        max: 100
-      })
-    }, {
-      backgroundColor: Utils.color(2),
-      borderColor: Utils.color(2),
-      data: Utils.numbers({
-        count: DATA_COUNT,
-        min: 0,
-        max: 100
-      }),
-      datalabels: {
-        align: 'end',
-        anchor: 'end'
-      }
-    }]
-  },
-  options: {
-    plugins: {
-      datalabels: {
-        backgroundColor: function(context) {
-          return context.dataset.backgroundColor;
-        },
-        borderRadius: 4,
-        color: 'white',
-        font: {
-          weight: 'bold'
-        },
-        formatter: Math.round,
-        padding: 6
-      }
-    },
-
-    // Core options
-    aspectRatio: 5 / 3,
-    layout: {
-      padding: {
-        top: 32,
-        right: 16,
-        bottom: 16,
-        left: 8
-      }
-    },
-    elements: {
-      line: {
-        fill: false,
-        tension: 0.4
-      }
-    },
-    scales: {
-      y: {
-        stacked: true
-      }
-    }
-  }
-} /* </block:config> */;
-
-var actions = [
-  {
-    name: 'Randomize',
-    handler: function(chart) {
-      chart.data.datasets.forEach(function(dataset, i) {
-        dataset.backgroundColor = dataset.borderColor = Utils.color();
-        dataset.data = dataset.data.map(function(value) {
-          return Utils.rand(0, 100);
+        // Membuat Chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar', // Jenis chart
+            data: data,
+            options: {
+                plugins: {
+                    datalabels: {
+                        display: true, // Menampilkan label data
+                        align: 'end', // Posisi label data
+                        anchor: 'end', // Tempat label data
+                        formatter: (value) => `${value}`, // Format label data
+                        color: '#000', // Warna label data
+                        font: {
+                            weight: 'bold' // Ketebalan font
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
-      });
-
-      chart.update();
-    }
-  },
-  {
-    name: 'Add data',
-    handler: function(chart) {
-      chart.data.labels.push(chart.data.labels.length);
-      chart.data.datasets.forEach(function(dataset, i) {
-        dataset.data.push(Utils.rand(0, 100));
-      });
-
-      chart.update();
-    }
-  },
-  {
-    name: 'Remove data',
-    handler: function(chart) {
-      chart.data.labels.shift();
-      chart.data.datasets.forEach(function(dataset, i) {
-        dataset.data.shift();
-      });
-
-      chart.update();
-    }
-  }
-];
-
-module.exports = {
-  actions: actions,
-  config: config,
-};
-```
+    </script>
+</body>
+</html>
